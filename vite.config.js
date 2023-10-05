@@ -1,14 +1,22 @@
+import {resolve} from "path"
 import {defineConfig} from "vite"
-import {svelte} from "@sveltejs/vite-plugin-svelte"
 import legacy from "@rollup/plugin-legacy"
-import checker from "vite-plugin-checker"
+import dts from "vite-plugin-dts"
 
 export default defineConfig({
+    build: {
+        lib: {
+            entry: resolve(__dirname, "src/index.ts"),
+            name: "web-shell",
+            fileName: "web-shell",
+        },
+    },
     plugins: [
         legacy({
             "./public/v86/libv86.js": "V86Starter",
         }),
-        checker({typescript: true}),
-        svelte(),
+        dts({
+            insertTypesEntry: true,
+        }),
     ],
 })
