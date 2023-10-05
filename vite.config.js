@@ -13,7 +13,7 @@ export default defineConfig({
     },
     plugins: [
         legacy({
-            "./public/v86/libv86.js": "V86Starter",
+            "./v86/libv86.js": "V86Starter",
         }),
         dts({
             insertTypesEntry: true,

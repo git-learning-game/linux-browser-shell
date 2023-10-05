@@ -677,14 +677,12 @@
                         write: (d) => {},
                     },
                 ].concat(
-                    v86util
-                        .range(VIRTIO_9P_MAX_TAGLEN)
-                        .map((d) => ({
-                            bytes: 1,
-                            name: "mount tag name " + d,
-                            read: () => this.configspace_tagname[d] || 0,
-                            write: (e) => {},
-                        })),
+                    v86util.range(VIRTIO_9P_MAX_TAGLEN).map((d) => ({
+                        bytes: 1,
+                        name: "mount tag name " + d,
+                        read: () => this.configspace_tagname[d] || 0,
+                        write: (e) => {},
+                    })),
                 ),
             },
         })

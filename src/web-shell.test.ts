@@ -1,5 +1,5 @@
 import {expect, test} from "vitest"
-import WebShell from "./web-shell.ts"
+import WebShell from "./index.ts"
 let shell = new WebShell()
 
 test("run a simple command", async () => {

@@ -1,5 +1,4 @@
 {
-    "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
         "allowImportingTsExtensions": true,
         "typeRoots": ["typings", "node_modules/@types"],

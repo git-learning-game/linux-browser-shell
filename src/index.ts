@@ -1,5 +1,15 @@
-// @ts-ignore
-import V86Starter from "../public/v86/libv86.js"
+//@ts-ignore
+import V86Starter from "../v86/libv86.js"
+//@ts-ignore
+import wasmPath from "../v86/v86.wasm?url"
+//@ts-ignore
+import biosPath from "../v86/seabios.bin?url"
+//@ts-ignore
+import vgaBiosPath from "../v86/vgabios.bin?url"
+//@ts-ignore
+import cdromPath from "../v86/image.iso.zst?url"
+//@ts-ignore
+import bootedStatePath from "../v86/booted-state.bin.zst?url"
 
 import {Mutex} from "async-mutex"
 
@@ -11,12 +21,12 @@ class WebShell {
     // Whether or not to restore the VM state from a file. Set to false to perform a regular boot.
     private restoreState = true
     private config: any = {
-        wasm_path: "./v86/v86.wasm",
+        wasm_path: wasmPath,
         memory_size: 64 * 1024 * 1024,
         vga_memory_size: 2 * 1024 * 1024,
-        bios: {url: "./v86/seabios.bin"},
-        vga_bios: {url: "./v86/vgabios.bin"},
-        cdrom: {url: "./v86/image.iso.zst"},
+        bios: {url: biosPath},
+        vga_bios: {url: vgaBiosPath},
+        cdrom: {url: cdromPath},
         disable_mouse: true,
         autostart: true,
     }
@@ -24,7 +34,7 @@ class WebShell {
 
     private prompt = "/ # "
 
-    private serialBuffer = ""
+    //private serialBuffer = ""
 
     constructor(screen?: HTMLDivElement, serial?: HTMLDivElement) {
         this.mutex = new Mutex()
@@ -53,12 +63,12 @@ class WebShell {
 
         if (this.restoreState) {
             this.config["initial_state"] = {
-                url: "./v86/booted-state.bin.zst",
+                url: bootedStatePath,
             }
         }
     }
 
-    private appendToSerialDiv(text: string) {
+    private appendToSerialDiv(_: string) {
         /* Disabled for performance reasons!
         this.serialBuffer += text
         if (this.serialBuffer.includes("\n")) {
