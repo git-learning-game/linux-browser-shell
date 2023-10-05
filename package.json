@@ -18,7 +18,8 @@
         }
     },
     "scripts": {
-        "build": "vite build"
+        "build": "vite build",
+        "test": "vitest --browser=chrome"
     },
     "dependencies": {
         "async-mutex": "^0.4.0"
