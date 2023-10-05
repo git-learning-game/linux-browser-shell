@@ -21,20 +21,14 @@
         "build": "vite build"
     },
     "dependencies": {
-        "async-mutex": "^0.4.0",
-        "d3": "^7.8.5",
-        "v86": "^0.4.0"
+        "async-mutex": "^0.4.0"
     },
     "devDependencies": {
         "@rollup/plugin-legacy": "^3.0.1",
-        "@sveltejs/vite-plugin-svelte": "^2.4.6",
-        "@tsconfig/svelte": "^5.0.2",
-        "@types/d3": "^7.4.0",
         "@vitest/browser": "^0.34.4",
         "prettier": "^3.0.3",
         "typescript": "^5.2.2",
         "vite": "^4.4.9",
-        "vite-plugin-checker": "^0.6.2",
         "vite-plugin-dts": "^3.6.0",
         "vitest": "^0.34.4",
         "webdriverio": "^8.16.6"
