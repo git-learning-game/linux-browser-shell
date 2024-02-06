@@ -1,32 +1,16 @@
 //@ts-ignore
 import V86Starter from "../v86/libv86.js"
-//@ts-ignore
-import wasmPath from "../v86/v86.wasm?url"
-//@ts-ignore
-import biosPath from "../v86/seabios.bin?url"
-//@ts-ignore
-import vgaBiosPath from "../v86/vgabios.bin?url"
-//@ts-ignore
-import cdromPath from "../v86/image.iso.zst?url"
-//@ts-ignore
-import bootedStatePath from "../v86/booted-state.bin.zst?url"
 
 import {Mutex} from "async-mutex"
 
-class WebShell {
+class LinuxBrowserShell {
     private mutex: Mutex
     private mutex2: Mutex
     private emulator: any
 
-    // Whether or not to restore the VM state from a file. Set to false to perform a regular boot.
-    private restoreState = true
     private config: any = {
-        wasm_path: wasmPath,
         memory_size: 64 * 1024 * 1024,
         vga_memory_size: 2 * 1024 * 1024,
-        bios: {url: biosPath},
-        vga_bios: {url: vgaBiosPath},
-        cdrom: {url: cdromPath},
         disable_mouse: true,
         autostart: true,
     }
@@ -36,14 +20,29 @@ class WebShell {
 
     //private serialBuffer = ""
 
-    constructor(screen?: HTMLDivElement, serial?: HTMLDivElement) {
+    constructor(
+        paths: {
+            wasm: string
+            bios: string
+            vga_bios: string
+            cdrom: string
+            initial_state?: string
+        },
+        screen?: HTMLDivElement,
+        serial?: HTMLDivElement,
+    ) {
         this.mutex = new Mutex()
         this.mutex2 = new Mutex()
+
+        this.config["wasm_path"] = paths.wasm
+        this.config["bios"] = {url: paths.bios}
+        this.config["vga_bios"] = {url: paths.vga_bios}
+        this.config["cdrom"] = {url: paths.cdrom}
 
         if (screen) {
             let screenDiv = screen
             screenDiv.style.whiteSpace = "pre"
-            screenDiv.style.fontFamily = "Iosevka"
+            screenDiv.style.fontFamily = "monospace"
             screenDiv.style.fontSize = "18px"
             screenDiv.style.lineHeight = "20px"
 
@@ -61,11 +60,10 @@ class WebShell {
             this.serialDiv = serial
         }
 
-        if (this.restoreState) {
-            this.config["initial_state"] = {
-                url: bootedStatePath,
-            }
+        if (typeof paths.initial_state !== "undefined") {
+            this.config["initial_state"] = {url: paths.initial_state}
         }
+        console.log("constructor done")
     }
 
     private appendToSerialDiv(_: string) {
@@ -205,6 +203,9 @@ class WebShell {
 
     boot(): Promise<void> {
         return new Promise((resolve, _) => {
+            console.log("booting")
+            console.log(this.config)
+
             // Start the this.emulator!
             //@ts-ignore
             this.emulator = new V86Starter(this.config)
@@ -248,4 +249,4 @@ class WebShell {
     }
 }
 
-export default WebShell
+export default LinuxBrowserShell

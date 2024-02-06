@@ -7,9 +7,10 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, "src/index.ts"),
-            name: "web-shell",
-            fileName: "web-shell",
+            name: "linux-browser-shell",
+            fileName: "linux-browser-shell",
         },
+        assetsInlineLimit: 0,
     },
     plugins: [
         legacy({
