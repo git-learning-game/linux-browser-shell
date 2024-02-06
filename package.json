@@ -17,8 +17,13 @@
             }
         }
     },
+    "files": [
+        "dist",
+        "LICENSE.md",
+        "README.md"
+    ],
     "scripts": {
-        "build": "vite build",
+        "prepare": "vite build",
         "test": "vitest --browser=chrome"
     },
     "dependencies": {
