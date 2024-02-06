@@ -9,7 +9,7 @@ class LinuxBrowserShell {
     private emulator: any
 
     private config: any = {
-        memory_size: 64 * 1024 * 1024,
+        memory_size: 128 * 1024 * 1024,
         vga_memory_size: 2 * 1024 * 1024,
         disable_mouse: true,
         autostart: true,
