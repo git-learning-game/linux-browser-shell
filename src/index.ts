@@ -247,6 +247,17 @@ class LinuxBrowserShell {
     setKeyboardActive(active: boolean): void {
         this.emulator.keyboard_set_status(active)
     }
+
+    downloadState(filename: string = "linux-browser-shell-state.bin"): void {
+        this.emulator.save_state().then((state: any) => {
+            var a = document.createElement("a")
+            a.download = filename
+            a.href = window.URL.createObjectURL(new Blob([state]))
+            a.dataset.downloadurl =
+                "application/octet-stream:" + a.download + ":" + a.href
+            a.click()
+        })
+    }
 }
 
 export default LinuxBrowserShell
