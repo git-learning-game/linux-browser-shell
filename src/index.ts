@@ -2,6 +2,7 @@
 import V86Starter from "../v86/libv86.js"
 
 import {Mutex} from "async-mutex"
+import {Terminal} from "xterm"
 
 class LinuxBrowserShell {
     private mutex: Mutex
@@ -13,12 +14,13 @@ class LinuxBrowserShell {
         vga_memory_size: 2 * 1024 * 1024,
         disable_mouse: true,
         autostart: true,
+        uart1: true, // enable ttyS1
     }
     private serialDiv?: HTMLDivElement
 
     private prompt = "/ # "
 
-    //private serialBuffer = ""
+    private serialBuffer = ""
 
     constructor(
         paths: {
@@ -39,6 +41,8 @@ class LinuxBrowserShell {
         this.config["vga_bios"] = {url: paths.vga_bios}
         this.config["cdrom"] = {url: paths.cdrom}
 
+        //this.config["serial_container_xtermjs"] = serial
+
         if (screen) {
             let screenDiv = screen
             screenDiv.style.whiteSpace = "pre"
@@ -56,18 +60,17 @@ class LinuxBrowserShell {
             this.config["screen_container"] = screenDiv
         }
 
-        if (typeof serial !== "undefined") {
+        if (serial) {
             this.serialDiv = serial
         }
 
         if (typeof paths.initial_state !== "undefined") {
             this.config["initial_state"] = {url: paths.initial_state}
         }
-        console.log("constructor done")
     }
 
-    private appendToSerialDiv(_: string) {
-        /* Disabled for performance reasons!
+    private appendToSerialDiv(text: string) {
+        /*
         this.serialBuffer += text
         if (this.serialBuffer.includes("\n")) {
             if (typeof this.serialDiv !== "undefined") {
@@ -203,9 +206,6 @@ class LinuxBrowserShell {
 
     boot(): Promise<void> {
         return new Promise((resolve, _) => {
-            console.log("booting")
-            console.log(this.config)
-
             // Start the this.emulator!
             //@ts-ignore
             this.emulator = new V86Starter(this.config)
@@ -215,6 +215,28 @@ class LinuxBrowserShell {
                 if (this.emulator.is_running()) {
                     clearInterval(interval)
 
+                    // Initialize xterm.js.
+                    if (typeof this.serialDiv !== "undefined") {
+                        let term = new Terminal({
+                            fontFamily: "Iosevka Nerd Font",
+                        })
+                        term.open(document.getElementById("serial"))
+                        term.onKey((key) => {
+                            let char = key.key
+                            let bytes = []
+                            for (var i = 0; i < char.length; i++) {
+                                bytes.push(char.charCodeAt(i))
+                            }
+                            this.emulator.serial_send_bytes(1, bytes)
+                        })
+                        this.emulator.add_listener(
+                            "serial1-output-char",
+                            (char: string) => {
+                                term.write(char)
+                            },
+                        )
+                    }
+
                     this.prompt = "WEB_SHELL_PROMPT> "
                     await this.run_unsafe(
                         `export PS1='${this.prompt}'`,
@@ -223,10 +245,10 @@ class LinuxBrowserShell {
                     )
 
                     // Set terminal width so that input lines don't wrap.
-                    await this.run_unsafe("stty cols 1000", false, true)
+                    //await this.run_unsafe("stty cols 1000", false, true)
 
                     // By default HOME seems to be set to "/"?
-                    await this.run_unsafe("export HOME=/root")
+                    //await this.run_unsafe("export HOME=/root")
 
                     resolve()
                 }

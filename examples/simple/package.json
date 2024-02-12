@@ -9,7 +9,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "linux-browser-shell": "file:../../",
         "vite": "^5.0.12",
-        "linux-browser-shell": "file:../../"
+        "xterm": "^5.3.0"
     }
 }
