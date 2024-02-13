@@ -7,7 +7,7 @@ const shell = new LinuxBrowserShell(
         vga_bios: "./v86/vgabios.bin",
         cdrom: "./v86/image.iso",
         initial_state: "./v86/initial-state.bin.zst",
-        font: "monospace"
+        font: "monospace",
     },
     document.getElementById("screen"),
 )
@@ -34,3 +34,8 @@ window.run = (cmd) => {
         console.log(res)
     })
 }
+
+// Demonstrate how to listen for user commands.
+tty0.onUserCommand(() => {
+    console.log("User ran a command")
+})

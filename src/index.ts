@@ -3,17 +3,18 @@ import V86Starter from "../v86/libv86.js"
 
 import {Mutex} from "async-mutex"
 import {Terminal as XTerm} from "xterm"
-import { FitAddon } from '@xterm/addon-fit';
+import {FitAddon} from "@xterm/addon-fit"
 
 export class Terminal {
     private prompt = "# "
     private mutex = new Mutex()
     private mutex2 = new Mutex()
+    private onUserCommandCallback = () => {}
 
     constructor(
         private id: number,
         private emulator: any,
-        private options: { font?: string }
+        private options: {font?: string},
     ) {}
 
     attach(div: HTMLElement) {
@@ -25,6 +26,9 @@ export class Terminal {
         term.open(div)
         term.onKey((key) => {
             this.send(key.key)
+            if (key.key === "\r") {
+                this.onUserCommandCallback()
+            }
         })
         this.emulator.add_listener(
             `serial${this.id}-output-char`,
@@ -32,7 +36,7 @@ export class Terminal {
                 term.write(char)
             },
         )
-        
+
         function outputsize() {
             fitAddon.fit()
             //ToDo: set number of colums as well
@@ -151,6 +155,10 @@ export class Terminal {
         return
     }
 
+    onUserCommand(callback: () => void) {
+        this.onUserCommandCallback = callback
+    }
+
     //setKeyboardActive(active: boolean): void {
     //    this.emulator.keyboard_set_status(active)
     //}
@@ -213,10 +221,10 @@ export class LinuxBrowserShell {
         this.emulator = new V86Starter(this.config)
 
         this.terminals = [
-            new Terminal(0, this.emulator, { font: settings.font}),
-            new Terminal(1, this.emulator, { font: settings.font}),
-            new Terminal(2, this.emulator, { font: settings.font}),
-            new Terminal(3, this.emulator, { font: settings.font}),
+            new Terminal(0, this.emulator, {font: settings.font}),
+            new Terminal(1, this.emulator, {font: settings.font}),
+            new Terminal(2, this.emulator, {font: settings.font}),
+            new Terminal(3, this.emulator, {font: settings.font}),
         ]
     }
 
