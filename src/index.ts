@@ -172,6 +172,7 @@ export class LinuxBrowserShell {
         memory_size: 128 * 1024 * 1024,
         vga_memory_size: 2 * 1024 * 1024,
         disable_mouse: true,
+        disable_keyboard: true,
 
         // enable ttyS1-ttyS3
         uart1: true,
@@ -194,6 +195,7 @@ export class LinuxBrowserShell {
         this.config["bios"] = {url: settings.bios}
         this.config["vga_bios"] = {url: settings.vga_bios}
         this.config["cdrom"] = {url: settings.cdrom}
+        
 
         if (typeof settings.initial_state !== "undefined") {
             this.config["initial_state"] = {url: settings.initial_state}
