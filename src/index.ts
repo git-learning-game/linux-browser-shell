@@ -3,6 +3,7 @@ import V86Starter from "../v86/libv86.js"
 
 import {Mutex} from "async-mutex"
 import {Terminal as XTerm} from "xterm"
+import { FitAddon } from '@xterm/addon-fit';
 
 export class Terminal {
     private prompt = "# "
@@ -19,6 +20,8 @@ export class Terminal {
         let term = new XTerm({
             fontFamily: this.options.font || "monospace",
         })
+        const fitAddon = new FitAddon()
+        term.loadAddon(fitAddon)
         term.open(div)
         term.onKey((key) => {
             this.send(key.key)
@@ -29,6 +32,12 @@ export class Terminal {
                 term.write(char)
             },
         )
+        
+        function outputsize() {
+            fitAddon.fit()
+            //ToDo: set number of colums as well
+        }
+        new ResizeObserver(outputsize).observe(div)
     }
 
     async send(chars: string): Promise<void> {
