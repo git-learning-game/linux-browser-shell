@@ -1,6 +1,11 @@
 {
     "name": "linux-browser-shell",
     "version": "0.1.0",
+    "contributors": [
+        "bleeptrack <mail@bleeptrack.de> (https://bleeptrack.de)",
+        "blinry <mail@blinry.org> (https://blinry.org)"
+    ],
+    "repository": "github:git-learning-game/linux-browser-shell",
     "type": "module",
     "main": "./dist/linux-browser-shell.umd.cjs",
     "module": "./dist/linux-browser-shell.js",
