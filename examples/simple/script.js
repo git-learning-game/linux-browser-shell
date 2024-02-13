@@ -7,6 +7,7 @@ const shell = new LinuxBrowserShell(
         vga_bios: "./v86/vgabios.bin",
         cdrom: "./v86/image.iso",
         initial_state: "./v86/initial-state.bin.zst",
+        font: "monospace"
     },
     document.getElementById("screen"),
 )

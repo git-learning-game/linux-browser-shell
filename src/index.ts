@@ -12,11 +12,12 @@ export class Terminal {
     constructor(
         private id: number,
         private emulator: any,
+        private options: { font?: string }
     ) {}
 
     attach(div: HTMLElement) {
         let term = new XTerm({
-            fontFamily: "Iosevka Nerd Font",
+            fontFamily: this.options.font || "monospace",
         })
         term.open(div)
         term.onKey((key) => {
@@ -162,22 +163,23 @@ export class LinuxBrowserShell {
     }
 
     constructor(
-        paths: {
+        settings: {
             wasm: string
             bios: string
             vga_bios: string
             cdrom: string
             initial_state?: string
+            font?: string
         },
         screen?: HTMLDivElement,
     ) {
-        this.config["wasm_path"] = paths.wasm
-        this.config["bios"] = {url: paths.bios}
-        this.config["vga_bios"] = {url: paths.vga_bios}
-        this.config["cdrom"] = {url: paths.cdrom}
+        this.config["wasm_path"] = settings.wasm
+        this.config["bios"] = {url: settings.bios}
+        this.config["vga_bios"] = {url: settings.vga_bios}
+        this.config["cdrom"] = {url: settings.cdrom}
 
-        if (typeof paths.initial_state !== "undefined") {
-            this.config["initial_state"] = {url: paths.initial_state}
+        if (typeof settings.initial_state !== "undefined") {
+            this.config["initial_state"] = {url: settings.initial_state}
         }
 
         if (screen) {
@@ -202,10 +204,10 @@ export class LinuxBrowserShell {
         this.emulator = new V86Starter(this.config)
 
         this.terminals = [
-            new Terminal(0, this.emulator),
-            new Terminal(1, this.emulator),
-            new Terminal(2, this.emulator),
-            new Terminal(3, this.emulator),
+            new Terminal(0, this.emulator, { font: settings.font}),
+            new Terminal(1, this.emulator, { font: settings.font}),
+            new Terminal(2, this.emulator, { font: settings.font}),
+            new Terminal(3, this.emulator, { font: settings.font}),
         ]
     }
 
