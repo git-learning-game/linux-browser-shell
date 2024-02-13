@@ -1,4 +1,4 @@
-import LinuxBrowserShell from "linux-browser-shell"
+import {LinuxBrowserShell} from "linux-browser-shell"
 
 const shell = new LinuxBrowserShell(
     {
@@ -21,6 +21,15 @@ shell.boot().then(() => {
     console.log("Booted")
 })
 
+// Save state of the VM. You can then later load it using the `initial_state` setting.
 document.getElementById("save").onclick = async function () {
     shell.downloadState()
+}
+
+// Demonstrate how to send commands to a Terminal.
+// You can use this in the developer console, using `run("uname -a")` for example.
+window.run = (cmd) => {
+    tty0.run(cmd).then((res) => {
+        console.log(res)
+    })
 }

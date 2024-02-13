@@ -5,7 +5,7 @@ import {Mutex} from "async-mutex"
 import {Terminal as XTerm} from "xterm"
 
 export class Terminal {
-    private prompt = "/ # "
+    private prompt = "# "
     private mutex = new Mutex()
     private mutex2 = new Mutex()
 

@@ -24,7 +24,7 @@
     ],
     "scripts": {
         "prepare": "vite build",
-        "test": "vitest --browser=chrome"
+        "test": "vitest"
     },
     "dependencies": {
         "async-mutex": "^0.4.0",
