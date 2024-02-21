@@ -10,6 +10,7 @@ export class Terminal {
     private mutex = new Mutex()
     private mutex2 = new Mutex()
     private onUserCommandCallback = () => {}
+    private xterm?: XTerm
 
     constructor(
         private id: number,
@@ -18,13 +19,13 @@ export class Terminal {
     ) {}
 
     attach(div: HTMLElement) {
-        let term = new XTerm({
+        this.xterm = new XTerm({
             fontFamily: this.options.font || "monospace",
         })
         const fitAddon = new FitAddon()
-        term.loadAddon(fitAddon)
-        term.open(div)
-        term.onKey((key) => {
+        this.xterm.loadAddon(fitAddon)
+        this.xterm.open(div)
+        this.xterm.onKey((key) => {
             this.send(key.key)
             if (key.key === "\r") {
                 this.onUserCommandCallback()
@@ -33,7 +34,7 @@ export class Terminal {
         this.emulator.add_listener(
             `serial${this.id}-output-char`,
             (char: string) => {
-                term.write(char)
+                this.xterm.write(char)
             },
         )
 
@@ -159,9 +160,15 @@ export class Terminal {
         this.onUserCommandCallback = callback
     }
 
-    //setKeyboardActive(active: boolean): void {
-    //    this.emulator.keyboard_set_status(active)
-    //}
+    focus(doFocus = true): void {
+        if (this.xterm) {
+            if (doFocus) {
+                this.xterm.focus()
+            } else {
+                this.xterm.blur()
+            }
+        }
+    }
 }
 
 export class LinuxBrowserShell {
@@ -195,7 +202,6 @@ export class LinuxBrowserShell {
         this.config["bios"] = {url: settings.bios}
         this.config["vga_bios"] = {url: settings.vga_bios}
         this.config["cdrom"] = {url: settings.cdrom}
-        
 
         if (typeof settings.initial_state !== "undefined") {
             this.config["initial_state"] = {url: settings.initial_state}
