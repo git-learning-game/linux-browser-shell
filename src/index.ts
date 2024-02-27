@@ -19,6 +19,10 @@ export class Terminal {
     ) {}
 
     attach(div: HTMLElement) {
+        if (div.childElementCount > 0) {
+            throw new Error("Can only attach to an empty div.")
+        }
+
         this.xterm = new XTerm({
             fontFamily: this.options.font || "monospace",
         })
@@ -154,7 +158,7 @@ export class Terminal {
 
     async putFile(path: string, lines: string[]): Promise<void> {
         let escapedContent = lines.join("\n").replace(/'/g, "'\\''")
-        await this.run(`echo '${escapedContent}' > ${path}`)
+        await this.run(`echo -n '${escapedContent}' > ${path}`)
         return
     }
 
