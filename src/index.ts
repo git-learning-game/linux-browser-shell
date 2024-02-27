@@ -79,7 +79,9 @@ export class Terminal {
         this.mutex2.release()
 
         if (exit_code != "0") {
-            throw new Error(`Command '${cmd}' exited with code '${exit_code}'`)
+            throw new Error(
+                `Command '${cmd}' exited with code '${exit_code}'. Output: '${output}'`,
+            )
         }
         return output
     }
