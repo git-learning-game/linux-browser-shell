@@ -47,6 +47,18 @@ export class Terminal {
             //ToDo: set number of colums as well
         }
         new ResizeObserver(outputsize).observe(div)
+
+        window.addEventListener(
+            "beforeunload",
+            (e) => {
+                if (this.xterm.element.classList.contains("focus")) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return "Do you want to close Oh My Git?"
+                }
+            },
+            true,
+        )
     }
 
     async send(chars: string): Promise<void> {
