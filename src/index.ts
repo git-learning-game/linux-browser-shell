@@ -12,6 +12,10 @@ export class Terminal {
     private onUserCommandCallback = () => {}
     private xterm?: XTerm
 
+    charCallback = (char: string) => {
+        this.xterm?.write(char)
+    }
+
     constructor(
         private id: number,
         private emulator: any,
@@ -29,17 +33,15 @@ export class Terminal {
         const fitAddon = new FitAddon()
         this.xterm.loadAddon(fitAddon)
         this.xterm.open(div)
-        this.xterm.onKey((key) => {
-            this.send(key.key)
-            if (key.key === "\r") {
+        this.xterm.onData((s: string) => {
+            this.send(s)
+            if (s === "\r") {
                 this.onUserCommandCallback()
             }
         })
         this.emulator.add_listener(
             `serial${this.id}-output-char`,
-            (char: string) => {
-                this.xterm.write(char)
-            },
+            this.charCallback,
         )
 
         function outputsize() {
@@ -59,6 +61,15 @@ export class Terminal {
             },
             true,
         )
+    }
+
+    dispose() {
+        this.emulator.remove_listener(
+            `serial${this.id}-output-char`,
+            this.charCallback,
+        )
+
+        this.xterm?.dispose()
     }
 
     async send(chars: string): Promise<void> {
